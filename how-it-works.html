@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>How It Works — ColonyVision Lab</title>
+  <meta name="description" content="Technical explanation of the ColonyVision Lab computer vision pipeline: WebAssembly, OpenCV.js, and IndexedDB.">
+  <meta name="author" content="Zoryana Pihach Romankiv">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230071e3'/%3E%3Ccircle cx='12' cy='12' r='3' fill='white'/%3E%3Ccircle cx='19' cy='14' r='2' fill='white'/%3E%3Ccircle cx='15' cy='20' r='3.5' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .article-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .lead-text {
+      font-size: 1.2rem;
+      color: var(--text-2);
+      line-height: 1.6;
+    }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .step-num {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent);
+      background: var(--accent-soft);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      align-self: flex-start;
+    }
+    .step-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .code-pill {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      background: var(--surface-2);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+    .callout {
+      background: var(--accent-soft);
+      border-left: 4px solid var(--accent);
+      padding: 16px 20px;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-badge" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1.5" fill="currentColor"/><circle cx="15" cy="9" r="1.5" fill="currentColor"/><circle cx="11" cy="15" r="2" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/></svg>
+        </div>
+        <div>
+          <h1>How ColonyVision Works</h1>
+          <p class="subtitle">CAI 2840 Masterclass • Developed by Zoryana Pihach Romankiv</p>
+        </div>
+      </div>
+      <nav class="header-links">
+        <a class="nav-link" href="index.html">Back to Lab Bench</a>
+        <a class="nav-link active" href="how-it-works.html">How It Works</a>
+        <a class="nav-link" href="guide/">Architecture Guide</a>
+        <a class="nav-link" href="resources.html">Resources</a>
+      </nav>
+    </header>
+
+    <main class="article-wrap">
+      <p class="lead-text">
+        In traditional computer vision web applications, user images travel to a remote cloud server for processing. 
+        <strong>ColonyVision Lab flips that paradigm:</strong> your browser compiles OpenCV C++ directly to WebAssembly (Wasm) inside an isolated Web Worker, persists rich multi-megabyte image Blobs in IndexedDB, and executes quantitative microbiology morphometry with <strong>zero server round-trips</strong>.
+      </p>
+
+      <div class="callout">
+        <strong>The Browser Is the Computer:</strong> As Dr. Ernesto Lee emphasizes in CAI 2840, modern client browsers possess <em>Muscle</em> (WebAssembly), <em>Memory</em> (IndexedDB), and <em>Eyes</em> (OpenCV.js). Your pixels don't need a round-trip ticket across the internet to be understood.
+      </div>
+
+      <!-- Step 1 -->
+      <section class="step-card">
+        <span class="step-num">Stage 1</span>
+        <h3>Zero-Copy Image Ingestion & Web Worker Dispatch</h3>
+        <p>
+          High-resolution photos from modern smartphones can reach 12 to 48 megapixels. Transporting such massive pixel arrays across threads can freeze user interfaces.
+        </p>
+        <p>
+          ColonyVision utilizes the browser's native <span class="code-pill">createImageBitmap()</span> API to decode image streams asynchronously. The bitmap is then transferred to our dedicated Web Worker via <span class="code-pill">worker.postMessage({ bitmap }, [bitmap])</span>. By passing the bitmap in the <em>transfer list</em>, ownership is transferred with <strong>zero memory copies</strong>.
+        </p>
+      </section>
+
+      <!-- Step 2 -->
+      <section class="step-card">
+        <span class="step-num">Stage 2</span>
+        <h3>Petri Dish ROI Detection & Rim Masking</h3>
+        <p>
+          Biological Petri dishes have circular plastic rims that cause optical glare, reflections, and meniscus distortions.
+        </p>
+        <p>
+          The pipeline first downscales a working copy to 400px and executes Canny edge detection (<span class="code-pill">cv.Canny(blur, edges, 30, 90)</span>). Circular contour candidates are evaluated using enclosing circle circularity ratio. Once the 90mm dish center and radius are established, an internal circular mask is constructed. Pixels outside the growth surface are masked to zero, eliminating rim glare artifacts.
+        </p>
+      </section>
+
+      <!-- Step 3 -->
+      <section class="step-card">
+        <span class="step-num">Stage 3</span>
+        <h3>Multi-Color Space Segmentation & Adaptive Thresholding</h3>
+        <p>
+          Microbiology uses diverse growth media: light amber Nutrient Agar, opaque dark-red Blood Agar, and translucent Hemocytometer microscope grids.
+        </p>
+        <p>
+          ColonyVision converts the image into both <strong>Grayscale</strong> (<span class="code-pill">cv.COLOR_RGBA2GRAY</span>) and <strong>HSV</strong> (<span class="code-pill">cv.COLOR_RGB2HSV</span>) color spaces. On Blood Agar, yellow <em>S. aureus</em> colonies stand out dramatically in the Value (V) channel. On Nutrient Agar, an <strong>Adaptive Gaussian Threshold</strong> (<span class="code-pill">cv.adaptiveThreshold</span>) dynamically computes local neighborhood thresholds to compensate for non-uniform lighting across the dish.
+        </p>
+      </section>
+
+      <!-- Step 4 -->
+      <section class="step-card">
+        <span class="step-num">Stage 4</span>
+        <h3>Morphological Opening & Distance Transform Separation</h3>
+        <p>
+          Raw binary thresholds suffer from two challenges: tiny single-pixel camera noise, and clustered colonies that touch each other.
+        </p>
+        <p>
+          We apply <strong>Morphological Opening</strong> (<span class="code-pill">cv.morphologyEx</span>) with an elliptical 3×3 structuring element. This erodes stray noise specks and dilates the remaining authentic colony bodies. For touching colonies, a Euclidean <strong>Distance Transform</strong> (<span class="code-pill">cv.distanceTransform</span>) computes the distance from each pixel to the nearest background pixel, isolating the centroid peaks of contiguous colonies.
+        </p>
+      </section>
+
+      <!-- Step 5 -->
+      <section class="step-card">
+        <span class="step-num">Stage 5</span>
+        <h3>Contour Extraction & Biometric Morphometry</h3>
+        <p>
+          Colonies are vectorized via <span class="code-pill">cv.findContours(cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)</span>. For every detected contour:
+        </p>
+        <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+          <li><strong>Area (A):</strong> Green's theorem contour area (<span class="code-pill">cv.contourArea</span>).</li>
+          <li><strong>Perimeter (P):</strong> Closed arc length (<span class="code-pill">cv.arcLength</span>).</li>
+          <li><strong>Circularity Index (C):</strong> Computed as \( C = \frac{4\pi A}{P^2} \). Perfectly spherical colonies yield \( C \approx 1.0 \), while irregular smudges and scratches score below \( 0.40 \).</li>
+          <li><strong>Centroid Coordinates:</strong> Calculated from spatial moments \( (\frac{m_{10}}{m_{00}}, \frac{m_{01}}{m_{00}}) \).</li>
+          <li><strong>Size Classification:</strong> Punctiform (&lt;0.5mm), Small (0.5–1.5mm), Medium (1.5–3.0mm), and Large (&gt;3.0mm).</li>
+          <li><strong>Concentration:</strong> Estimated as \( \text{CFU/mL} = \frac{\text{Count}}{\text{Volume}} \times 10^{\text{Dilution}} \).</li>
+        </ul>
+      </section>
+
+      <!-- Step 6 -->
+      <section class="step-card">
+        <span class="step-num">Stage 6</span>
+        <h3>Wasm Memory Safety & IndexedDB Structured Persistence</h3>
+        <p>
+          Because OpenCV.js compiles C++ into WebAssembly, objects allocated via Emscripten live in a dedicated heap. JavaScript garbage collection <em>does not</em> automatically free <span class="code-pill">cv.Mat</span> allocations.
+        </p>
+        <p>
+          ColonyVision implements a strict <strong>Mat Tracker</strong> pattern: all intermediate matrices are tracked and systematically deleted inside a <span class="code-pill">try ... finally</span> block via <span class="code-pill">T.free()</span>.
+        </p>
+        <p>
+          Completed assays are stored in the browser's <strong>IndexedDB</strong> database (<span class="code-pill">colonyvision_db</span>), persisting high-resolution PNG Blobs, thumbnail previews, and JSON colony metrics across browser restarts and offline sessions.
+        </p>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>ColonyVision Lab • Developed by <strong>Zoryana Pihach Romankiv</strong> • CAI 2840 (Miami Dade College)</p>
+      <nav class="footer-nav">
+        <a href="index.html">Lab Bench</a>
+        <a href="guide/">Architecture Guide</a>
+        <a href="resources.html">Resources</a>
+        <a href="https://github.com/zoryanaromankiv001-alt/Final" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </footer>
+  </div>
+</body>
+</html>

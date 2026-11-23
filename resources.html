@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Resources & References — ColonyVision Lab</title>
+  <meta name="description" content="Academic references, specifications, and documentation for ColonyVision Lab and CAI 2840.">
+  <meta name="author" content="Zoryana Pihach Romankiv">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230071e3'/%3E%3Ccircle cx='12' cy='12' r='3' fill='white'/%3E%3Ccircle cx='19' cy='14' r='2' fill='white'/%3E%3Ccircle cx='15' cy='20' r='3.5' fill='white'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .article-wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .res-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .res-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .res-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .res-item {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .res-item a {
+      color: var(--accent);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.95rem;
+    }
+    .res-item a:hover {
+      text-decoration: underline;
+    }
+    .res-item p {
+      color: var(--text-2);
+      font-size: 0.88rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-badge" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="8" cy="10" r="1.5" fill="currentColor"/><circle cx="15" cy="9" r="1.5" fill="currentColor"/><circle cx="11" cy="15" r="2" fill="currentColor"/><circle cx="16" cy="16" r="1" fill="currentColor"/></svg>
+        </div>
+        <div>
+          <h1>Resources & References</h1>
+          <p class="subtitle">CAI 2840 Masterclass • Developed by Zoryana Pihach Romankiv</p>
+        </div>
+      </div>
+      <nav class="header-links">
+        <a class="nav-link" href="index.html">Back to Lab Bench</a>
+        <a class="nav-link" href="how-it-works.html">How It Works</a>
+        <a class="nav-link" href="guide/">Architecture Guide</a>
+        <a class="nav-link active" href="resources.html">Resources</a>
+      </nav>
+    </header>
+
+    <main class="article-wrap">
+      <section class="res-card">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          Course & Academic Foundations
+        </h3>
+        <ul class="res-list">
+          <li class="res-item">
+            <a href="https://www.mdc.edu/" target="_blank" rel="noopener">CAI 2840 — Introduction to Computer Vision</a>
+            <p>Miami Dade College, School of Engineering, Technology and Design. Instruction by Dr. Ernesto Lee.</p>
+          </li>
+          <li class="res-item">
+            <span style="font-weight:600; font-size:0.95rem;">Masterclass: "The Browser Is the Computer"</span>
+            <p>Core curriculum demonstrating that client-side WebAssembly, IndexedDB, and OpenCV.js enable zero-server, privacy-first computer vision applications.</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="res-card">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          Computer Vision & WebAssembly Documentation
+        </h3>
+        <ul class="res-list">
+          <li class="res-item">
+            <a href="https://docs.opencv.org/4.x/d5/d10/tutorial_js_root.html" target="_blank" rel="noopener">OpenCV.js Official Tutorials</a>
+            <p>Comprehensive guide to running OpenCV functions in JavaScript, including image processing, filtering, contours, and GUI features.</p>
+          </li>
+          <li class="res-item">
+            <a href="https://emscripten.org/docs/porting/connecting_cpp_and_javascript/embind.html" target="_blank" rel="noopener">Emscripten Embind & WebAssembly Runtime</a>
+            <p>Technical reference for compiling C++ to WebAssembly, memory lifecycle management, and JavaScript bindings.</p>
+          </li>
+          <li class="res-item">
+            <a href="https://developer.mozilla.org/en-US/docs/Web/API/OffscreenCanvas" target="_blank" rel="noopener">MDN: OffscreenCanvas & ImageBitmap Transfers</a>
+            <p>Zero-copy transfer specifications allowing workers to decode and manipulate image buffers without touching the DOM.</p>
+          </li>
+          <li class="res-item">
+            <a href="https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API" target="_blank" rel="noopener">MDN: IndexedDB API & Transactions</a>
+            <p>Guide to high-capacity transactional client-side database storage for image Blobs and structured metadata.</p>
+          </li>
+        </ul>
+      </section>
+
+      <section class="res-card">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+          Microbiology Protocols & Mathematical Formulations
+        </h3>
+        <ul class="res-list">
+          <li class="res-item">
+            <span style="font-weight:600; font-size:0.95rem;">Standard Methods for the Examination of Water and Wastewater (Section 9215)</span>
+            <p>Heterotrophic Plate Count (HPC) guidelines, serial dilution factors, and viable colony counting standards.</p>
+          </li>
+          <li class="res-item">
+            <span style="font-weight:600; font-size:0.95rem;">Circularity Metric (Isoperimetric Quotient)</span>
+            <p>\( \text{Circularity} = \frac{4\pi \times \text{Area}}{\text{Perimeter}^2} \). Measures how closely a detected contour approximates a true geometric circle.</p>
+          </li>
+          <li class="res-item">
+            <span style="font-weight:600; font-size:0.95rem;">Colony Concentration Equation</span>
+            <p>\( \text{CFU/mL} = \frac{\text{Colony Count}}{\text{Plated Volume (mL)}} \times \frac{1}{\text{Dilution Factor}} \).</p>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>ColonyVision Lab • Developed by <strong>Zoryana Pihach Romankiv</strong> • CAI 2840 (Miami Dade College)</p>
+      <nav class="footer-nav">
+        <a href="index.html">Lab Bench</a>
+        <a href="how-it-works.html">How It Works</a>
+        <a href="guide/">Architecture Guide</a>
+        <a href="https://github.com/zoryanaromankiv001-alt/Final" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </footer>
+  </div>
+</body>
+</html>

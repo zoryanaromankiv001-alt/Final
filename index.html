@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>ColonyVision Lab — Browser-Based Bio-Colony Counter & Cellular Morphometry</title>
+  <meta name="description" content="Automated bacterial colony counter and micro-particle morphometry laboratory running 100% in your browser with OpenCV.js, WebAssembly, and IndexedDB.">
+  <meta name="author" content="Zoryana Pihach Romankiv">
+  <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230071e3'/%3E%3Ccircle cx='12' cy='12' r='3' fill='white'/%3E%3Ccircle cx='19' cy='14' r='2' fill='white'/%3E%3Ccircle cx='15' cy='20' r='3.5' fill='white'/%3E%3C/svg%3E">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="wrap">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="logo-badge" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <circle cx="8" cy="10" r="1.5" fill="currentColor"/>
+            <circle cx="15" cy="9" r="1.5" fill="currentColor"/>
+            <circle cx="11" cy="15" r="2" fill="currentColor"/>
+            <circle cx="16" cy="16" r="1" fill="currentColor"/>
+          </svg>
+        </div>
+        <div>
+          <h1>ColonyVision Lab <span class="version-tag">Wasm CV</span></h1>
+          <p class="subtitle">Bio-Colony Counter & Cellular Morphometry • Developed by Zoryana Pihach Romankiv</p>
+        </div>
+      </div>
+      <nav class="header-links" aria-label="Main Navigation">
+        <a class="nav-link active" href="index.html">Lab Bench</a>
+        <a class="nav-link" href="how-it-works.html">How It Works</a>
+        <a class="nav-link" href="guide/">Architecture Guide</a>
+        <a class="nav-link" href="resources.html">Resources</a>
+        <a class="nav-link" href="https://github.com/zoryanaromankiv001-alt/Final" target="_blank" rel="noopener">GitHub</a>
+      </nav>
+    </header>
+
+    <!-- Main Stage -->
+    <main>
+      <section id="stage" class="stage" aria-label="Computer Vision Workspace">
+        <!-- Prompt Zone (Initial landing state) -->
+        <div id="prompt-zone" class="prompt-zone">
+          <div class="prompt-icon" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+              <circle cx="16" cy="8" r="1"/>
+              <circle cx="8" cy="14" r="1"/>
+            </svg>
+          </div>
+          <div class="prompt-text">
+            <h2>Analyze a Petri Dish or Micro-Specimen</h2>
+            <p>Upload a photo of an agar plate, bacterial culture, or cell hemocytometer. Zero server uploads: every pixel is computed locally in WebAssembly.</p>
+          </div>
+          <div class="prompt-actions">
+            <button type="button" class="btn btn-primary" id="prompt-choose-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Choose Photo
+            </button>
+            <button type="button" class="btn btn-secondary" id="prompt-camera-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+              Use Camera
+            </button>
+          </div>
+          <div class="sample-row">
+            <span>No plate handy? Try a masterclass sample:</span>
+            <button type="button" class="sample-btn" id="sample-bac-btn">E. coli Nutrient Agar</button>
+            <button type="button" class="sample-btn" id="sample-staph-btn">S. aureus Blood Agar</button>
+            <button type="button" class="sample-btn" id="sample-yeast-btn">Yeast Cells</button>
+          </div>
+        </div>
+
+        <!-- Active Workbench (Shown when plate is loaded) -->
+        <div id="workbench" class="workbench" hidden>
+          <!-- Canvas Viewport -->
+          <div class="viewport-pane">
+            <div class="viewport-toolbar">
+              <div class="view-segmented" role="tablist" aria-label="Visual representation modes">
+                <button type="button" class="active" data-view="annotated" role="tab">Annotated Overlay</button>
+                <button type="button" data-view="heatmap" role="tab">Density Heatmap</button>
+                <button type="button" data-view="mask" role="tab">Binary Mask</button>
+                <button type="button" data-view="original" role="tab">Raw Photo</button>
+              </div>
+              <span style="font-size: 0.8rem; color: #8e8e93;">Hover to inspect · Click to add/remove</span>
+            </div>
+
+            <div class="canvas-container">
+              <canvas id="main-canvas"></canvas>
+              <!-- Interactive Tooltip -->
+              <div id="colony-tooltip" class="colony-tooltip" hidden></div>
+            </div>
+          </div>
+
+          <!-- Inspector Sidebar -->
+          <aside class="inspector-pane" aria-label="Specimen Analysis and Controls">
+            <div class="inspector-header">
+              <label for="exp-title-input" class="metric-label">Experiment Name</label>
+              <input id="exp-title-input" class="title-input" type="text" value="Colony Specimen Assay" spellcheck="false">
+            </div>
+
+            <!-- Primary Metrics -->
+            <div class="metrics-grid">
+              <div class="metric-card hero">
+                <span class="metric-label">Total Colony Count (CFU)</span>
+                <span class="metric-value" id="metric-cfu-count">0</span>
+                <span class="metric-sub">Viable count verified</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Concentration (CFU/mL)</span>
+                <span class="metric-value" id="metric-cfu-ml" style="font-size:1.25rem;">0</span>
+                <span class="metric-sub">Based on dilution factor</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Plate Density</span>
+                <span class="metric-value" id="metric-density" style="font-size:1.25rem;">0 /cm²</span>
+                <span class="metric-sub">Standard 90mm plate</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Mean Circularity</span>
+                <span class="metric-value" id="metric-circularity" style="font-size:1.25rem;">—</span>
+                <span class="metric-sub">4π·Area / Perimeter²</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Average Area</span>
+                <span class="metric-value" id="metric-avg-area" style="font-size:1.25rem;">—</span>
+                <span class="metric-sub">Colony surface size</span>
+              </div>
+              <div class="metric-card" style="grid-column: span 2;">
+                <span class="metric-label">WASM Pipeline Latency</span>
+                <span class="metric-value" id="metric-speed" style="font-size:1.25rem; color:var(--success);">0 ms</span>
+                <span class="metric-sub">Zero server round trips</span>
+              </div>
+            </div>
+
+            <!-- Morphological Size Breakdown Histogram -->
+            <div class="chart-box">
+              <span class="chart-title">Colony Size Distribution</span>
+              <div class="cat-row">
+                <div class="cat-meta"><span>Punctiform (&lt; 0.5mm)</span><strong id="cnt-punctiform">0</strong></div>
+                <div class="cat-bar-track"><div id="bar-punctiform" class="cat-bar-fill fill-punctiform" style="width:0%"></div></div>
+              </div>
+              <div class="cat-row">
+                <div class="cat-meta"><span>Small (0.5 – 1.5mm)</span><strong id="cnt-small">0</strong></div>
+                <div class="cat-bar-track"><div id="bar-small" class="cat-bar-fill fill-small" style="width:0%"></div></div>
+              </div>
+              <div class="cat-row">
+                <div class="cat-meta"><span>Medium (1.5 – 3.0mm)</span><strong id="cnt-medium">0</strong></div>
+                <div class="cat-bar-track"><div id="bar-medium" class="cat-bar-fill fill-medium" style="width:0%"></div></div>
+              </div>
+              <div class="cat-row">
+                <div class="cat-meta"><span>Large (&gt; 3.0mm)</span><strong id="cnt-large">0</strong></div>
+                <div class="cat-bar-track"><div id="bar-large" class="cat-bar-fill fill-large" style="width:0%"></div></div>
+              </div>
+            </div>
+
+            <!-- Pipeline Tuning Controls -->
+            <div class="controls-group">
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Threshold Sensitivity</span>
+                  <span class="val" id="val-sensitivity">8</span>
+                </div>
+                <input type="range" id="slider-sensitivity" min="2" max="22" step="1" value="8">
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Min Colony Radius</span>
+                  <span class="val" id="val-min-radius">3px</span>
+                </div>
+                <input type="range" id="slider-min-radius" min="1" max="15" step="0.5" value="3">
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Max Colony Radius</span>
+                  <span class="val" id="val-max-radius">80px</span>
+                </div>
+                <input type="range" id="slider-max-radius" min="20" max="160" step="5" value="80">
+              </div>
+
+              <div class="control-item">
+                <div class="control-label">
+                  <span>Circularity Filter</span>
+                  <span class="val" id="val-circularity">0.40</span>
+                </div>
+                <input type="range" id="slider-circularity" min="0.10" max="0.90" step="0.05" value="0.40">
+              </div>
+
+              <div class="control-item">
+                <div class="control-label"><span>Dilution Factor</span></div>
+                <select id="select-dilution">
+                  <option value="0">10⁰ (Undiluted 1:1)</option>
+                  <option value="-1">10⁻¹ (1:10)</option>
+                  <option value="-2">10⁻² (1:100)</option>
+                  <option value="-3">10⁻³ (1:1,000)</option>
+                  <option value="-4" selected>10⁻⁴ (1:10,000)</option>
+                  <option value="-5">10⁻⁵ (1:100,000)</option>
+                  <option value="-6">10⁻⁶ (1:1,000,000)</option>
+                  <option value="-7">10⁻⁷ (1:10,000,000)</option>
+                </select>
+              </div>
+
+              <div class="control-item">
+                <div class="control-label"><span>Plated Volume</span></div>
+                <select id="select-volume">
+                  <option value="0.1" selected>0.1 mL (Standard spread)</option>
+                  <option value="0.05">0.05 mL (Drop plate)</option>
+                  <option value="0.2">0.2 mL</option>
+                  <option value="1.0">1.0 mL (Pour plate)</option>
+                </select>
+              </div>
+
+              <div class="control-item">
+                <div class="control-label"><span>Agar Medium / Contrast</span></div>
+                <select id="select-agar">
+                  <option value="auto" selected>Auto-detect Agar</option>
+                  <option value="nutrient">Nutrient / LB Agar (Amber/Light)</option>
+                  <option value="blood">Blood Agar (Red / High Contrast)</option>
+                  <option value="yeast">Brightfield / Hemocytometer</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Inspector Actions -->
+            <div class="inspector-actions">
+              <button type="button" class="btn btn-primary" id="btn-save-exp">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Save to Lab Notebook
+              </button>
+              <div style="display:flex; gap:8px;">
+                <button type="button" class="btn btn-secondary" id="btn-download-png" style="flex:1;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  PNG
+                </button>
+                <button type="button" class="btn btn-secondary" id="btn-export-csv" style="flex:1;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/></svg>
+                  CSV
+                </button>
+                <button type="button" class="btn btn-secondary" id="btn-print-report" style="flex:1;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                  Print
+                </button>
+              </div>
+              <button type="button" class="btn btn-secondary" id="btn-scan-another">Analyze Another Specimen</button>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <!-- Persistent Library / Lab Notebook Section -->
+      <section class="library-section" aria-labelledby="library-heading">
+        <div class="library-header">
+          <h2 id="library-heading">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+            </svg>
+            IndexedDB Lab Notebook <span class="badge-count" id="library-count">(0)</span>
+          </h2>
+          <input type="search" id="library-search" class="search-input" placeholder="Search saved assays…">
+        </div>
+        <ul id="library-grid" class="library-grid"></ul>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p><strong>ColonyVision Lab</strong> • Developed by <strong>Zoryana Pihach Romankiv</strong> • CAI 2840 Masterclass: <em>The Browser Is the Computer</em></p>
+      <p style="color:var(--text-3); font-size:0.8rem;">Zero server processing. OpenCV.js compiles via Emscripten to WebAssembly. Data persists in browser-local IndexedDB.</p>
+      <nav class="footer-nav">
+        <a href="how-it-works.html">How It Works</a>
+        <a href="guide/">Architecture Guide</a>
+        <a href="resources.html">Resources</a>
+        <a href="https://github.com/zoryanaromankiv001-alt/Final" target="_blank" rel="noopener">Source Code</a>
+        <button type="button" id="btn-reset-app" class="btn-link btn-link-danger">Reset App Data</button>
+      </nav>
+    </footer>
+  </div>
+
+  <!-- Hidden File Input -->
+  <input type="file" id="file-input" accept="image/*" hidden>
+
+  <!-- Floating Functional Liquid Glass Dock -->
+  <div class="dock">
+    <div id="status-pill" class="status-pill glass" data-state="busy" role="status">
+      <span class="spinner" aria-hidden="true"></span>
+      <span class="status-dot" aria-hidden="true"></span>
+      <span id="status-text">Loading WebAssembly vision core…</span>
+    </div>
+    <div class="dock-toolbar glass" role="toolbar" aria-label="Plate Capture Controls">
+      <button type="button" class="btn btn-primary" id="choose-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <span>Upload Photo</span>
+      </button>
+      <button type="button" class="btn btn-secondary" id="camera-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span>Live Camera</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Camera Dialog Sheet -->
+  <dialog id="camera-dialog">
+    <div class="dialog-content glass">
+      <h3>Capture Petri Dish with Camera</h3>
+      <p style="color:var(--text-2); font-size:0.9rem;">Hold the camera steady directly above the plate with flat, uniform lighting.</p>
+      <video id="camera-feed" playsinline muted></video>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-secondary" id="camera-close-btn">Cancel</button>
+        <button type="button" class="btn btn-primary" id="camera-capture-btn">Capture Frame</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Reset Confirmation Dialog -->
+  <dialog id="reset-confirm-dialog">
+    <div class="dialog-content glass">
+      <h3 style="color:var(--danger);">Reset Laboratory Notebook?</h3>
+      <p style="color:var(--text-2); font-size:0.92rem;">This will permanently erase all saved plate assays and IndexedDB records stored on this browser. This action cannot be undone.</p>
+      <div class="dialog-actions">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-reset">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-reset">Reset All Data</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Application Module Script -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

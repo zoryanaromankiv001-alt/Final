@@ -50,24 +50,66 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #000000;
-    --surface: #1c1c1e;
-    --surface-2: #2c2c2e;
-    --surface-hover: #3a3a3c;
+    --bg: #0b0c10;
+    --surface: #171920;
+    --surface-2: #222631;
+    --surface-hover: #2d3342;
     --text: #f5f5f7;
     --text-2: #a1a1a6;
     --text-3: #636366;
     --separator: rgba(255, 255, 255, 0.15);
-    --border: rgba(255, 255, 255, 0.12);
+    --border: rgba(255, 255, 255, 0.14);
 
     --accent: #2997ff;
     --accent-press: #147ce5;
     --accent-soft: rgba(41, 151, 255, 0.18);
 
-    --glass-bg: rgba(28, 28, 30, 0.82);
-    --glass-border: rgba(255, 255, 255, 0.15);
-    --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+    --glass-bg: rgba(23, 25, 32, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.16);
+    --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.65);
   }
+}
+
+html[data-theme="dark"],
+:root[data-theme="dark"] {
+  --bg: #0b0c10;
+  --surface: #171920;
+  --surface-2: #222631;
+  --surface-hover: #2d3342;
+  --text: #f5f5f7;
+  --text-2: #a1a1a6;
+  --text-3: #636366;
+  --separator: rgba(255, 255, 255, 0.15);
+  --border: rgba(255, 255, 255, 0.14);
+
+  --accent: #2997ff;
+  --accent-press: #147ce5;
+  --accent-soft: rgba(41, 151, 255, 0.18);
+
+  --glass-bg: rgba(23, 25, 32, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --glass-shadow: 0 12px 40px rgba(0, 0, 0, 0.65);
+}
+
+html[data-theme="light"],
+:root[data-theme="light"] {
+  --bg: #f2f2f7;
+  --surface: #ffffff;
+  --surface-2: #f7f7fa;
+  --surface-hover: #ebebee;
+  --text: #1c1c1e;
+  --text-2: #55555c;
+  --text-3: #8e8e93;
+  --separator: rgba(60, 60, 67, 0.15);
+  --border: rgba(60, 60, 67, 0.12);
+
+  --accent: #0071e3;
+  --accent-press: #005bb5;
+  --accent-soft: rgba(0, 113, 227, 0.12);
+
+  --glass-bg: rgba(255, 255, 255, 0.82);
+  --glass-border: rgba(255, 255, 255, 0.65);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
 }
 
 /* Base styles */
@@ -168,6 +210,33 @@ h1 {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle-btn:hover {
+  background: var(--surface-hover);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.theme-toggle-btn svg {
+  width: 16px;
+  height: 16px;
 }
 
 .nav-link {
@@ -1002,6 +1071,187 @@ video#camera-feed {
 
 .btn-link-danger {
   color: var(--danger) !important;
+}
+
+/* Math & Science Formula Card */
+.formula-card {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 14px 0;
+  transition: all var(--transition-fast);
+}
+
+.formula-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.formula-badge {
+  align-self: flex-start;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.formula-math {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.formula-lhs {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.formula-op {
+  color: var(--text-2);
+  font-weight: 400;
+}
+
+.formula-frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  padding: 0 4px;
+}
+
+.frac-top {
+  border-bottom: 2px solid var(--text);
+  padding-bottom: 3px;
+  text-align: center;
+  width: 100%;
+}
+
+.frac-bottom {
+  padding-top: 3px;
+  text-align: center;
+  width: 100%;
+}
+
+.formula-desc {
+  font-size: 0.88rem;
+  color: var(--text-2);
+  line-height: 1.45;
+}
+
+/* Developer Attribution Banner & Cards */
+.dev-banner {
+  background: linear-gradient(135deg, var(--accent-soft), var(--surface-2));
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.dev-badge-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+}
+
+.dev-highlight-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dev-highlight-details {
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+
+.dev-portfolio-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  margin-top: 24px;
+  width: 100%;
+}
+
+.dev-avatar {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), #5856d6);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 4px 14px var(--accent-soft);
+}
+
+.dev-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+
+.dev-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.dev-name {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.dev-meta {
+  font-size: 0.88rem;
+  color: var(--text-2);
+}
+
+.dev-email {
+  font-size: 0.85rem;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.dev-email a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.dev-email a:hover {
+  text-decoration: underline;
 }
 
 /* Print Styles for Lab Experiment Report */

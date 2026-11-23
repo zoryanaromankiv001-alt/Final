@@ -14,6 +14,7 @@ ENDPOINTS = [
     ("/js/db.js", 200, "application/javascript"),
     ("/js/pipeline.js", 200, "application/javascript"),
     ("/js/vision-client.js", 200, "application/javascript"),
+    ("/js/theme.js", 200, "application/javascript"),
     ("/vision.worker.js", 200, "application/javascript"),
     ("/vendor/opencv/4.12.0/opencv.js", 200, "application/javascript"),
     ("/samples/bacterial-plate.jpg", 200, "image/jpeg"),

@@ -7,10 +7,11 @@
   <meta name="description" content="Automated bacterial colony counter and micro-particle morphometry laboratory running 100% in your browser with OpenCV.js, WebAssembly, and IndexedDB.">
   <meta name="author" content="Zoryana Pihach Romankiv">
   <meta name="theme-color" content="#f2f2f7" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#0b0c10" media="(prefers-color-scheme: dark)">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230071e3'/%3E%3Ccircle cx='12' cy='12' r='3' fill='white'/%3E%3Ccircle cx='19' cy='14' r='2' fill='white'/%3E%3Ccircle cx='15' cy='20' r='3.5' fill='white'/%3E%3C/svg%3E">
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/theme.js"></script>
 </head>
 <body>
   <div class="wrap">
@@ -28,7 +29,7 @@
         </div>
         <div>
           <h1>ColonyVision Lab <span class="version-tag">Wasm CV</span></h1>
-          <p class="subtitle">Bio-Colony Counter & Cellular Morphometry • Developed by Zoryana Pihach Romankiv</p>
+          <p class="subtitle">Bio-Colony Counter & Cellular Morphometry • Developed by <strong>Zoryana Pihach Romankiv</strong></p>
         </div>
       </div>
       <nav class="header-links" aria-label="Main Navigation">
@@ -37,8 +38,19 @@
         <a class="nav-link" href="guide/">Architecture Guide</a>
         <a class="nav-link" href="resources.html">Resources</a>
         <a class="nav-link" href="https://github.com/zoryanaromankiv001-alt/Final" target="_blank" rel="noopener">GitHub</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode"></button>
       </nav>
     </header>
+
+    <!-- Developer Resume Banner -->
+    <div class="dev-banner">
+      <div>
+        <div class="dev-badge-title">Computer Vision Portfolio Project</div>
+        <div class="dev-highlight-name">Zoryana Pihach Romankiv — Lead Developer</div>
+        <div class="dev-highlight-details">Miami Dade College • CAI 2840 Introduction to Computer Vision • Masterclass: <em>The Browser Is the Computer</em></div>
+      </div>
+      <a class="btn btn-secondary" href="mailto:zoryana.romankiv001@mymdc.net" style="font-size:0.85rem; padding:6px 14px;">Contact Developer</a>
+    </div>
 
     <!-- Main Stage -->
     <main>
@@ -101,6 +113,7 @@
             <div class="inspector-header">
               <label for="exp-title-input" class="metric-label">Experiment Name</label>
               <input id="exp-title-input" class="title-input" type="text" value="Colony Specimen Assay" spellcheck="false">
+              <span style="font-size:0.75rem; color:var(--text-3);">Investigator: <strong>Zoryana Pihach Romankiv</strong></span>
             </div>
 
             <!-- Primary Metrics -->
@@ -267,11 +280,22 @@
         </div>
         <ul id="library-grid" class="library-grid"></ul>
       </section>
+
+      <!-- Developer Profile Card for Resume -->
+      <section class="dev-portfolio-card">
+        <div class="dev-avatar">ZR</div>
+        <div class="dev-info">
+          <div class="dev-title">Developer &amp; Computer Vision Researcher</div>
+          <div class="dev-name">Zoryana Pihach Romankiv</div>
+          <div class="dev-meta">Miami Dade College • CAI 2840 Introduction to Computer Vision • Instructor: Dr. Ernesto Lee</div>
+          <div class="dev-email">Email: <a href="mailto:zoryana.romankiv001@mymdc.net">zoryana.romankiv001@mymdc.net</a> · GitHub: <a href="https://github.com/zoryanaromankiv001-alt/Final" target="_blank" rel="noopener">zoryanaromankiv001-alt/Final</a></div>
+        </div>
+      </section>
     </main>
 
     <!-- Footer -->
     <footer class="app-footer">
-      <p><strong>ColonyVision Lab</strong> • Developed by <strong>Zoryana Pihach Romankiv</strong> • CAI 2840 Masterclass: <em>The Browser Is the Computer</em></p>
+      <p><strong>ColonyVision Lab</strong> • Designed &amp; Developed by <strong>Zoryana Pihach Romankiv</strong> • CAI 2840 Masterclass: <em>The Browser Is the Computer</em></p>
       <p style="color:var(--text-3); font-size:0.8rem;">Zero server processing. OpenCV.js compiles via Emscripten to WebAssembly. Data persists in browser-local IndexedDB.</p>
       <nav class="footer-nav">
         <a href="how-it-works.html">How It Works</a>

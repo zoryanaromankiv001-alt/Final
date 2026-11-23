@@ -18,6 +18,7 @@ const ASSETS_TO_CACHE = [
   './js/db.js',
   './js/pipeline.js',
   './js/vision-client.js',
+  './js/theme.js',
   './vision.worker.js',
   './samples/bacterial-plate.jpg',
   './samples/staph-blood-agar.jpg',

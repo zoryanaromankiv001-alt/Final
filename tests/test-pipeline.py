@@ -43,7 +43,7 @@ class TestColonyVisionProject(unittest.TestCase):
             self.assertIn("ColonyVision", content, f"ColonyVision title missing from {page}")
 
     def test_js_modules(self):
-        for js_file in ["app.js", "db.js", "pipeline.js", "vision-client.js"]:
+        for js_file in ["app.js", "db.js", "pipeline.js", "vision-client.js", "theme.js"]:
             path = os.path.join(ROOT_DIR, "js", js_file)
             self.assertTrue(os.path.exists(path), f"JS module {js_file} missing")
             self.assertGreater(os.path.getsize(path), 500)

@@ -8,6 +8,7 @@
   <meta name="author" content="Zoryana Pihach Romankiv">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='14' fill='%230071e3'/%3E%3Ccircle cx='12' cy='12' r='3' fill='white'/%3E%3Ccircle cx='19' cy='14' r='2' fill='white'/%3E%3Ccircle cx='15' cy='20' r='3.5' fill='white'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/styles.css">
+  <script src="js/theme.js"></script>
   <style>
     .article-wrap {
       max-width: 860px;
@@ -28,7 +29,7 @@
       padding: 28px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
     }
     .step-num {
       display: inline-flex;
@@ -76,18 +77,29 @@
         </div>
         <div>
           <h1>How ColonyVision Works</h1>
-          <p class="subtitle">CAI 2840 Masterclass • Developed by Zoryana Pihach Romankiv</p>
+          <p class="subtitle">CAI 2840 Masterclass • Developed by <strong>Zoryana Pihach Romankiv</strong></p>
         </div>
       </div>
       <nav class="header-links">
-        <a class="nav-link" href="index.html">Back to Lab Bench</a>
+        <a class="nav-link" href="index.html">Lab Bench</a>
         <a class="nav-link active" href="how-it-works.html">How It Works</a>
         <a class="nav-link" href="guide/">Architecture Guide</a>
         <a class="nav-link" href="resources.html">Resources</a>
+        <button type="button" class="theme-toggle-btn" aria-label="Toggle Dark/Light Mode"></button>
       </nav>
     </header>
 
     <main class="article-wrap">
+      <!-- Developer Highlight Banner -->
+      <div class="dev-banner">
+        <div>
+          <div class="dev-badge-title">Lead Developer &amp; Project Creator</div>
+          <div class="dev-highlight-name">Zoryana Pihach Romankiv</div>
+          <div class="dev-highlight-details">Miami Dade College • CAI 2840 Introduction to Computer Vision • Under Dr. Ernesto Lee</div>
+        </div>
+        <a class="btn btn-secondary" href="mailto:zoryana.romankiv001@mymdc.net" style="font-size:0.85rem; padding:6px 14px;">Contact Developer</a>
+      </div>
+
       <p class="lead-text">
         In traditional computer vision web applications, user images travel to a remote cloud server for processing. 
         <strong>ColonyVision Lab flips that paradigm:</strong> your browser compiles OpenCV C++ directly to WebAssembly (Wasm) inside an isolated Web Worker, persists rich multi-megabyte image Blobs in IndexedDB, and executes quantitative microbiology morphometry with <strong>zero server round-trips</strong>.
@@ -145,21 +157,57 @@
         </p>
       </section>
 
-      <!-- Step 5 -->
+      <!-- Step 5 (Cleanly Formatted Formulas) -->
       <section class="step-card">
         <span class="step-num">Stage 5</span>
         <h3>Contour Extraction & Biometric Morphometry</h3>
         <p>
-          Colonies are vectorized via <span class="code-pill">cv.findContours(cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)</span>. For every detected contour:
+          Colonies are vectorized via <span class="code-pill">cv.findContours(cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE)</span>. Each candidate contour undergoes rigorous morphological analysis:
         </p>
+        
         <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
-          <li><strong>Area (A):</strong> Green's theorem contour area (<span class="code-pill">cv.contourArea</span>).</li>
-          <li><strong>Perimeter (P):</strong> Closed arc length (<span class="code-pill">cv.arcLength</span>).</li>
-          <li><strong>Circularity Index (C):</strong> Computed as \( C = \frac{4\pi A}{P^2} \). Perfectly spherical colonies yield \( C \approx 1.0 \), while irregular smudges and scratches score below \( 0.40 \).</li>
-          <li><strong>Centroid Coordinates:</strong> Calculated from spatial moments \( (\frac{m_{10}}{m_{00}}, \frac{m_{01}}{m_{00}}) \).</li>
-          <li><strong>Size Classification:</strong> Punctiform (&lt;0.5mm), Small (0.5–1.5mm), Medium (1.5–3.0mm), and Large (&gt;3.0mm).</li>
-          <li><strong>Concentration:</strong> Estimated as \( \text{CFU/mL} = \frac{\text{Count}}{\text{Volume}} \times 10^{\text{Dilution}} \).</li>
+          <li><strong>Surface Area (A):</strong> Computed via Green's theorem contour area integration (<span class="code-pill">cv.contourArea</span>).</li>
+          <li><strong>Boundary Perimeter (P):</strong> Closed contour arc length (<span class="code-pill">cv.arcLength</span>).</li>
+          <li><strong>Centroid Localization:</strong> Derived from spatial moments \( (m_{10}/m_{00}, m_{01}/m_{00}) \).</li>
+          <li><strong>Size Classification:</strong> Categorized into Punctiform (&lt; 0.5mm), Small (0.5 – 1.5mm), Medium (1.5 – 3.0mm), and Large (&gt; 3.0mm).</li>
         </ul>
+
+        <!-- Formula: Circularity -->
+        <div class="formula-card">
+          <div class="formula-badge">Shape Analysis</div>
+          <div class="formula-math">
+            <span class="formula-lhs">Circularity (C)</span>
+            <span class="formula-op">=</span>
+            <span class="formula-frac">
+              <span class="frac-top">4&pi; &times; Area</span>
+              <span class="frac-bottom">Perimeter<sup>2</sup></span>
+            </span>
+          </div>
+          <div class="formula-desc">
+            Also known as the isoperimetric quotient. Spherical, uniform colonies yield a circularity score <strong>C &approx; 1.0</strong>. Irregular smudges, scratches, or uneven agar lines yield values below <strong>0.40</strong> and are automatically filtered out.
+          </div>
+        </div>
+
+        <!-- Formula: Concentration -->
+        <div class="formula-card">
+          <div class="formula-badge">Concentration Assay</div>
+          <div class="formula-math">
+            <span class="formula-lhs">CFU / mL</span>
+            <span class="formula-op">=</span>
+            <span class="formula-frac">
+              <span class="frac-top">Total Count (CFU)</span>
+              <span class="frac-bottom">Plated Volume (mL)</span>
+            </span>
+            <span class="formula-op">&times;</span>
+            <span class="formula-frac">
+              <span class="frac-top">1</span>
+              <span class="frac-bottom">10<sup>Dilution</sup></span>
+            </span>
+          </div>
+          <div class="formula-desc">
+            Computes viable colony concentration in the stock suspension based on serial dilution powers of 10.
+          </div>
+        </div>
       </section>
 
       <!-- Step 6 -->
@@ -176,12 +224,24 @@
           Completed assays are stored in the browser's <strong>IndexedDB</strong> database (<span class="code-pill">colonyvision_db</span>), persisting high-resolution PNG Blobs, thumbnail previews, and JSON colony metrics across browser restarts and offline sessions.
         </p>
       </section>
+
+      <!-- Developer Profile Card for Resume -->
+      <section class="dev-portfolio-card">
+        <div class="dev-avatar">ZR</div>
+        <div class="dev-info">
+          <div class="dev-title">Developer &amp; Computer Vision Researcher</div>
+          <div class="dev-name">Zoryana Pihach Romankiv</div>
+          <div class="dev-meta">Miami Dade College • CAI 2840 Introduction to Computer Vision • Instructor: Dr. Ernesto Lee</div>
+          <div class="dev-email">Email: <a href="mailto:zoryana.romankiv001@mymdc.net">zoryana.romankiv001@mymdc.net</a> · Project Repository: <a href="https://github.com/zoryanaromankiv001-alt/Final" target="_blank" rel="noopener">zoryanaromankiv001-alt/Final</a></div>
+        </div>
+      </section>
     </main>
 
     <footer class="app-footer">
-      <p>ColonyVision Lab • Developed by <strong>Zoryana Pihach Romankiv</strong> • CAI 2840 (Miami Dade College)</p>
+      <p>ColonyVision Lab • Designed &amp; Developed by <strong>Zoryana Pihach Romankiv</strong> • CAI 2840 (Miami Dade College)</p>
       <nav class="footer-nav">
         <a href="index.html">Lab Bench</a>
+        <a href="how-it-works.html">How It Works</a>
         <a href="guide/">Architecture Guide</a>
         <a href="resources.html">Resources</a>
         <a href="https://github.com/zoryanaromankiv001-alt/Final" target="_blank" rel="noopener">GitHub</a>
